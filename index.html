@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caixa — Vegas Protocol</title>
+  <meta name="description" content="Caixa da Vegas Protocol: deposite com Pix e converta TKN em reais. Ambiente de demonstração.">
+  <meta name="theme-color" content="#07110d">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2307110d'/%3E%3Cpath d='M16 5 27 16 16 27 5 16Z' fill='none' stroke='%23e3c077' stroke-width='1.4'/%3E%3Cpath d='M11 12.5 16 21l5-8.5' fill='none' stroke='%23e3c077' stroke-width='1.8'/%3E%3C/svg%3E">
+  <link rel="preload" href="vendor/fonts/Archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="vendor/fonts/Martian-Mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="vendor/fonts.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="rail">
+      <a class="brand" href="#" aria-label="Vegas Protocol — início">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 2.5 29.5 16 16 29.5 2.5 16Z" fill="none" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M10.5 12 16 21.5 21.5 12" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span class="brand-name">Vegas<br>Protocol</span>
+      </a>
+
+      <div class="rail-label">Caixa</div>
+      <nav class="rail-nav" aria-label="Caixa">
+        <button class="rail-link is-active" type="button" data-nav="deposit" aria-current="page">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9m0 0 3.5-3.5M10 12 6.5 8.5M4 15.5h12"/></svg>
+          <span>Depositar</span>
+        </button>
+        <button class="rail-link" type="button" data-nav="withdraw">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 16V7m0 0 3.5 3.5M10 7 6.5 10.5M4 4.5h12"/></svg>
+          <span>Sacar</span>
+        </button>
+        <button class="rail-link" type="button" data-nav="history">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M10 6.5V10l2.5 1.5"/></svg>
+          <span>Histórico</span>
+        </button>
+      </nav>
+
+      <div class="rail-quote">
+        <span class="micro">Cotação da casa</span>
+        <p class="rail-rate">1 TKN <span>=</span> R$ 0,10</p>
+        <span class="micro rail-rate-note">Sem variação</span>
+      </div>
+
+      <div class="rail-bottom">
+        <a class="support-link" href="#atendimento">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 11v-1a6 6 0 0 1 12 0v1"/><path d="M4 10.5H3.5A1.5 1.5 0 0 0 2 12v1.5A1.5 1.5 0 0 0 3.5 15H4zM16 10.5h.5A1.5 1.5 0 0 1 18 12v1.5a1.5 1.5 0 0 1-1.5 1.5H16z"/><path d="M16 15v.5a2.5 2.5 0 0 1-2.5 2.5H11"/></svg>
+          <span>Atendimento</span>
+        </a>
+        <div class="demo-badge">
+          <span class="demo-dot" aria-hidden="true"></span>
+          <span><strong>Ambiente de demonstração.</strong> Nenhum pagamento real é processado.</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="topbar-title">
+          <h1>Caixa</h1>
+          <p>Depósitos e saques em TKN</p>
+        </div>
+        <div class="topbar-meta">
+          <div class="mesa">
+            <span class="micro">Mesa</span>
+            <time id="mesa-clock" datetime="2026-11-13T14:32">13 NOV 2026 · 14:32 BRT</time>
+          </div>
+          <button class="balance-chip" type="button" data-nav="history" aria-label="Saldo disponível. Ver histórico.">
+            <span class="balance-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><path d="M10 2.5 17 10l-7 7.5L3 10z"/><path d="M6.8 8 10 13l3.2-5"/></svg>
+            </span>
+            <span class="balance-copy">
+              <span class="micro">Saldo disponível</span>
+              <span class="balance-values">
+                <strong><span id="balance-tkn">8.450,00</span><span class="unit">TKN</span></strong>
+                <span id="balance-brl">R$ 845,00</span>
+              </span>
+            </span>
+          </button>
+          <button class="avatar" type="button" aria-label="Conta de Rafael M.">RM</button>
+        </div>
+      </header>
+
+      <main class="main">
+        <div class="main-col">
+          <div class="page-intro">
+            <p>Deposite com Pix ou converta seu saldo TKN de volta em reais. A cotação e a taxa aparecem antes de qualquer confirmação.</p>
+            <span class="session-tag"><span class="live-dot" aria-hidden="true"></span>Sessão simulada</span>
+          </div>
+
+          <div class="tabs" role="tablist" aria-label="Operações do caixa">
+            <button class="tab is-active" role="tab" id="tab-deposit" aria-selected="true" aria-controls="panel-deposit" data-nav="deposit">Depositar</button>
+            <button class="tab" role="tab" id="tab-withdraw" aria-selected="false" aria-controls="panel-withdraw" tabindex="-1" data-nav="withdraw">Sacar</button>
+            <button class="tab" role="tab" id="tab-history" aria-selected="false" aria-controls="panel-history" tabindex="-1" data-nav="history">Histórico</button>
+          </div>
+
+          <!-- DEPOSIT -->
+          <section class="panel" id="panel-deposit" role="tabpanel" aria-labelledby="tab-deposit" tabindex="0">
+            <div class="view" id="dep-view-form">
+              <article class="ticket deposit-ticket">
+                <header class="ticket-head">
+                  <div class="ticket-id">
+                    <span class="micro">Borderô de entrada</span>
+                    <span class="serial" data-serial="deposit">VP-2026-048216</span>
+                  </div>
+                  <span class="stamp" data-state="open">Em aberto</span>
+                </header>
+
+                <div class="ticket-main">
+                  <div class="ticket-body">
+                    <div class="field-group">
+                      <label class="field-label" for="dep-amount">Valor do depósito</label>
+                      <div class="amount-field">
+                        <span class="amount-prefix">R$</span>
+                        <input id="dep-amount" class="amount-input" type="text" inputmode="decimal" value="250,00" autocomplete="off" aria-describedby="dep-hint dep-error">
+                      </div>
+                      <div class="presets" role="group" aria-label="Valores rápidos">
+                        <button type="button" class="preset" data-brl="50">R$ 50</button>
+                        <button type="button" class="preset" data-brl="100">R$ 100</button>
+                        <button type="button" class="preset is-active" data-brl="250">R$ 250</button>
+                        <button type="button" class="preset" data-brl="500">R$ 500</button>
+                        <button type="button" class="preset" data-brl="1000">R$ 1.000</button>
+                      </div>
+                      <p class="hint" id="dep-hint">Mínimo de R$ 10,00. O saldo em TKN é creditado após a confirmação do Pix.</p>
+                      <p class="field-error" id="dep-error" role="alert" hidden></p>
+                    </div>
+
+                    <div class="field-group">
+                      <span class="field-label" id="dep-method-label">Forma de pagamento</span>
+                      <div class="methods" role="radiogroup" aria-labelledby="dep-method-label">
+                        <label class="method is-selected">
+                          <input type="radio" name="dep-method" value="pix" checked>
+                          <span class="method-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M12 3.5 20.5 12 12 20.5 3.5 12z"/><path d="M8 12h8M12 8v8"/></svg>
+                          </span>
+                          <span class="method-copy">
+                            <span class="method-name">Pix</span>
+                            <span class="method-note">QR Code ou copia e cola</span>
+                          </span>
+                          <span class="method-flag">Instantâneo</span>
+                          <span class="method-radio" aria-hidden="true"></span>
+                        </label>
+                        <label class="method is-disabled">
+                          <input type="radio" name="dep-method" value="card" disabled>
+                          <span class="method-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
+                          </span>
+                          <span class="method-copy">
+                            <span class="method-name">Cartão de crédito</span>
+                            <span class="method-note">Indisponível neste ambiente</span>
+                          </span>
+                          <span class="method-radio" aria-hidden="true"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <aside class="ticket-stub" aria-label="Resumo do borderô">
+                    <span class="micro stub-label">Resumo do borderô</span>
+                    <p class="stub-rate">1 TKN <span>=</span> R$ 0,10</p>
+                    <dl class="totals">
+                      <div><dt>Você envia</dt><dd id="dep-sum-send">R$ 250,00</dd></div>
+                      <div><dt>Taxa Pix</dt><dd class="is-free">R$ 0,00</dd></div>
+                      <div class="totals-grand"><dt>Você recebe</dt><dd><span id="dep-sum-tkn">2.500,00</span> <span class="unit">TKN</span></dd></div>
+                    </dl>
+                    <div class="stub-note-box">
+                      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 6.5v4M10 14h.01"/><circle cx="10" cy="10" r="7"/></svg>
+                      <span>Crédito imediato após o Pix. Você revisa o valor antes de pagar.</span>
+                    </div>
+                    <button class="btn btn-primary" type="button" id="btn-generate">
+                      <span>Gerar QR Pix</span>
+                      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg>
+                    </button>
+                    <p class="micro stub-fine">Cobrança válida por 15 minutos.</p>
+                  </aside>
+                </div>
+                <span class="perf perf-top" aria-hidden="true"></span>
+                <span class="perf perf-bottom" aria-hidden="true"></span>
+              </article>
+            </div>
+
+            <div class="view" id="dep-view-pix" hidden>
+              <article class="ticket pix-ticket">
+                <header class="ticket-head">
+                  <div class="ticket-id">
+                    <span class="micro">Cobrança Pix</span>
+                    <span class="serial" data-serial="deposit">VP-2026-048216</span>
+                  </div>
+                  <span class="stamp" data-state="pending" id="pix-stamp">Aguardando</span>
+                </header>
+                <div class="ticket-main">
+                  <div class="ticket-body pix-body">
+                    <div class="pix-lead">
+                      <div class="pix-qr">
+                        <div class="qr-frame"><div id="pix-qr" role="img" aria-label="QR Code Pix da cobrança"></div></div>
+                        <div class="qr-caption">
+                          <strong>Escaneie no app do seu banco</strong>
+                          <span>Aponte a câmera para o código.</span>
+                        </div>
+                      </div>
+                      <div class="pix-facts">
+                        <div class="pix-fact">
+                          <span class="micro">Valor a pagar</span>
+                          <p class="pix-amount" id="pix-brl">R$ 250,00</p>
+                        </div>
+                        <div class="pix-fact">
+                          <span class="micro">Você recebe</span>
+                          <p class="pix-tkn-line"><strong id="pix-tkn">2.500,00</strong><span class="unit">TKN</span></p>
+                        </div>
+                        <div class="pix-countdown">
+                          <div class="countdown-copy">
+                            <span class="micro">Expira em</span>
+                            <time id="pix-countdown" datetime="PT15M">15:00</time>
+                          </div>
+                          <div class="countdown-bar" aria-hidden="true"><span id="pix-expire-bar"></span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="copy-field">
+                      <span class="micro">Pix copia e cola</span>
+                      <div class="copy-row">
+                        <code id="pix-code">00020126...</code>
+                        <button type="button" class="btn btn-ghost btn-copy" id="pix-copy">
+                          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="7" width="9" height="9" rx="1.5"/><path d="M13 7V5a1.5 1.5 0 0 0-1.5-1.5h-6A1.5 1.5 0 0 0 4 5v6.5A1.5 1.5 0 0 0 5.5 13H7"/></svg>
+                          <span>Copiar código</span>
+                        </button>
+                      </div>
+                    </div>
+                    <p class="pix-expired" id="pix-expired" hidden>Esta cobrança expirou. Gere um novo código para continuar.</p>
+                    <div class="demo-action">
+                      <span class="micro">Modo demonstração</span>
+                      <p>Este Pix não é real. Use o botão abaixo para simular a confirmação do banco.</p>
+                      <div class="demo-action-row">
+                        <button type="button" class="btn btn-simulate" id="btn-simulate">Simular pagamento aprovado</button>
+                        <button type="button" class="btn btn-link" id="btn-cancel-pix">Cancelar cobrança</button>
+                      </div>
+                    </div>
+                  </div>
+                  <aside class="ticket-stub" aria-label="Resumo da cobrança">
+                    <span class="micro stub-label">Resumo da cobrança</span>
+                    <dl class="totals">
+                      <div><dt>Valor enviado</dt><dd id="pix-sum-send">R$ 250,00</dd></div>
+                      <div><dt>Taxa Pix</dt><dd class="is-free">R$ 0,00</dd></div>
+                      <div class="totals-grand"><dt>Crédito em TKN</dt><dd><span id="pix-sum-tkn">2.500,00</span> <span class="unit">TKN</span></dd></div>
+                      <div><dt>Cotação</dt><dd>1 TKN = R$ 0,10</dd></div>
+                    </dl>
+                    <ol class="stub-steps">
+                      <li class="is-done">Cobrança emitida</li>
+                      <li class="is-current">Aguardando o Pix</li>
+                      <li>Crédito na conta</li>
+                    </ol>
+                    <p class="micro stub-fine">Após o pagamento, o comprovante fica no histórico.</p>
+                  </aside>
+                </div>
+                <span class="perf perf-top" aria-hidden="true"></span>
+                <span class="perf perf-bottom" aria-hidden="true"></span>
+              </article>
+            </div>
+
+            <div class="view" id="dep-view-done" hidden>
+              <article class="ticket receipt-ticket">
+                <header class="ticket-head">
+                  <div class="ticket-id">
+                    <span class="micro">Comprovante de depósito</span>
+                    <span class="serial" id="done-serial">VP-2026-048216</span>
+                  </div>
+                  <span class="stamp" data-state="paid">Liquidado</span>
+                </header>
+                <div class="ticket-main">
+                  <div class="ticket-body receipt-body">
+                    <div class="receipt-check" aria-hidden="true">
+                      <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18"/><path d="m12.5 20.5 5 5 10-11"/></svg>
+                    </div>
+                    <p class="receipt-title">Depósito confirmado</p>
+                    <p class="receipt-sub">O saldo já está disponível na sua conta.</p>
+                    <div class="receipt-amount">
+                      <span class="micro">Creditado</span>
+                      <p><strong id="done-tkn">2.500,00</strong> <span class="unit">TKN</span></p>
+                      <span id="done-brl">R$ 250,00 via Pix</span>
+                    </div>
+                    <dl class="receipt-grid">
+                      <div><dt>Valor pago</dt><dd id="done-paid">R$ 250,00</dd></div>
+                      <div><dt>Taxa</dt><dd>R$ 0,00</dd></div>
+                      <div><dt>Data e hora</dt><dd id="done-date">13/11/2026 · 14:32</dd></div>
+                      <div><dt>Identificador</dt><dd class="mono-value" id="done-id">E0048216</dd></div>
+                    </dl>
+                    <div class="receipt-actions">
+                      <button type="button" class="btn btn-primary" id="btn-done-new">Novo depósito</button>
+                      <button type="button" class="btn btn-ghost" id="btn-done-withdraw">Sacar TKN</button>
+                    </div>
+                  </div>
+                  <aside class="ticket-stub receipt-stub" aria-label="Via do cliente">
+                    <span class="micro stub-label">Via do cliente</span>
+                    <p class="stub-receipt-id" id="done-serial-2">VP-2026-048216</p>
+                    <div class="stub-barcode" aria-hidden="true">
+                      <svg viewBox="0 0 132 28" preserveAspectRatio="none">
+                        <rect x="0" width="2" height="28"/><rect x="4" width="1" height="28"/><rect x="7" width="1" height="28"/><rect x="10" width="2" height="28"/><rect x="14" width="1" height="28"/><rect x="17" width="3" height="28"/><rect x="22" width="1" height="28"/><rect x="25" width="1" height="28"/><rect x="28" width="2" height="28"/><rect x="32" width="1" height="28"/><rect x="35" width="1" height="28"/><rect x="38" width="2" height="28"/><rect x="42" width="3" height="28"/><rect x="47" width="1" height="28"/><rect x="50" width="2" height="28"/><rect x="54" width="1" height="28"/><rect x="57" width="1" height="28"/><rect x="60" width="3" height="28"/><rect x="65" width="1" height="28"/><rect x="68" width="2" height="28"/><rect x="72" width="1" height="28"/><rect x="75" width="1" height="28"/><rect x="78" width="2" height="28"/><rect x="82" width="1" height="28"/><rect x="85" width="3" height="28"/><rect x="90" width="1" height="28"/><rect x="93" width="1" height="28"/><rect x="96" width="2" height="28"/><rect x="100" width="1" height="28"/><rect x="103" width="3" height="28"/><rect x="108" width="1" height="28"/><rect x="111" width="1" height="28"/><rect x="114" width="2" height="28"/><rect x="118" width="1" height="28"/><rect x="121" width="2" height="28"/><rect x="125" width="1" height="28"/><rect x="128" width="2" height="28"/>
+                      </svg>
+                    </div>
+                    <dl class="totals">
+                      <div><dt>Operação</dt><dd>Depósito Pix</dd></div>
+                      <div><dt>Status</dt><dd class="is-paid">Liquidado</dd></div>
+                      <div><dt>Saldo após</dt><dd id="done-balance">10.950,00 TKN</dd></div>
+                    </dl>
+                    <p class="micro stub-fine">Guarde este comprovante. Ele também está no histórico.</p>
+                  </aside>
+                </div>
+                <span class="perf perf-top" aria-hidden="true"></span>
+                <span class="perf perf-bottom" aria-hidden="true"></span>
+              </article>
+            </div>
+          </section>
+
+          <!-- WITHDRAW -->
+          <section class="panel" id="panel-withdraw" role="tabpanel" aria-labelledby="tab-withdraw" tabindex="0" hidden>
+            <div class="view" id="wd-view-form">
+              <article class="ticket withdraw-ticket">
+                <header class="ticket-head">
+                  <div class="ticket-id">
+                    <span class="micro">Borderô de saída</span>
+                    <span class="serial" id="wd-serial">VP-2026-048217</span>
+                  </div>
+                  <span class="stamp" data-state="open">Em aberto</span>
+                </header>
+                <div class="ticket-main">
+                  <div class="ticket-body">
+                    <div class="balance-inline">
+                      <div>
+                        <span class="micro">Disponível para saque</span>
+                        <p><strong id="wd-available">8.450,00</strong><span class="unit">TKN</span> <span class="muted-value" id="wd-available-brl">R$ 845,00</span></p>
+                      </div>
+                      <span class="balance-seal">TKN</span>
+                    </div>
+
+                    <div class="field-group">
+                      <label class="field-label" for="wd-amount">Valor do saque em TKN</label>
+                      <div class="amount-field">
+                        <input id="wd-amount" class="amount-input" type="text" inputmode="decimal" value="2.000,00" autocomplete="off" aria-describedby="wd-hint wd-amount-error">
+                        <span class="amount-suffix">TKN</span>
+                      </div>
+                      <p class="amount-mirror">≈ <strong id="wd-brl-mirror">R$ 200,00</strong> antes da taxa</p>
+                      <div class="presets" role="group" aria-label="Percentuais do saldo">
+                        <button type="button" class="preset" data-pct="25">25%</button>
+                        <button type="button" class="preset" data-pct="50">50%</button>
+                        <button type="button" class="preset" data-pct="75">75%</button>
+                        <button type="button" class="preset" data-pct="100">Máximo</button>
+                      </div>
+                      <p class="hint" id="wd-hint">Mínimo de 50 TKN. A taxa de 2% é descontada do valor convertido.</p>
+                      <p class="field-error" id="wd-amount-error" role="alert" hidden></p>
+                    </div>
+
+                    <div class="field-group">
+                      <span class="field-label" id="wd-key-label">Chave Pix para receber</span>
+                      <div class="key-row">
+                        <div class="select-wrap">
+                          <select id="wd-key-type" aria-label="Tipo de chave Pix">
+                            <option value="cpf">CPF</option>
+                            <option value="phone">Telefone</option>
+                            <option value="email">E-mail</option>
+                            <option value="random">Chave aleatória</option>
+                          </select>
+                          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg>
+                        </div>
+                        <input id="wd-key" class="text-input" type="text" inputmode="numeric" placeholder="000.000.000-00" autocomplete="off" aria-labelledby="wd-key-label" aria-describedby="wd-key-help wd-key-error">
+                      </div>
+                      <p class="hint" id="wd-key-help">A chave precisa estar no seu nome. O Pix sai após a análise da mesa.</p>
+                      <p class="field-error" id="wd-key-error" role="alert" hidden></p>
+                    </div>
+                  </div>
+
+                  <aside class="ticket-stub" aria-label="Resumo do borderô">
+                    <span class="micro stub-label">Resumo do borderô</span>
+                    <p class="stub-rate">1 TKN <span>=</span> R$ 0,10</p>
+                    <dl class="totals">
+                      <div><dt>Valor solicitado</dt><dd><span id="wd-sum-tkn">2.000,00</span><span class="unit">TKN</span></dd></div>
+                      <div><dt>Convertido</dt><dd id="wd-sum-gross">R$ 200,00</dd></div>
+                      <div><dt>Taxa (2%)</dt><dd class="is-fee" id="wd-sum-fee">− R$ 4,00</dd></div>
+                      <div class="totals-grand"><dt>Você recebe</dt><dd id="wd-sum-net">R$ 196,00</dd></div>
+                    </dl>
+                    <div class="stub-note-box">
+                      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 6.5v4M10 14h.01"/><circle cx="10" cy="10" r="7"/></svg>
+                      <span>O valor líquido cai na chave Pix informada após a análise da mesa.</span>
+                    </div>
+                    <button class="btn btn-primary" type="button" id="btn-withdraw">
+                      <span>Solicitar saque</span>
+                      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg>
+                    </button>
+                    <p class="micro stub-fine">Você confirma os dados na próxima etapa.</p>
+                  </aside>
+                </div>
+                <span class="perf perf-top" aria-hidden="true"></span>
+                <span class="perf perf-bottom" aria-hidden="true"></span>
+              </article>
+            </div>
+
+            <div class="view" id="wd-view-processing" hidden>
+              <article class="ticket processing-ticket">
+                <header class="ticket-head">
+                  <div class="ticket-id">
+                    <span class="micro">Borderô de saída</span>
+                    <span class="serial" id="proc-serial">VP-2026-048217</span>
+                  </div>
+                  <span class="stamp" data-state="pending">Em análise</span>
+                </header>
+                <div class="ticket-main">
+                  <div class="ticket-body">
+                    <p class="processing-title">Saque em processamento</p>
+                    <p class="processing-sub">A mesa está validando a chave Pix e o saldo. Você pode acompanhar pelo histórico.</p>
+                    <ol class="timeline" id="wd-timeline">
+                      <li class="is-done"><span class="timeline-dot" aria-hidden="true"></span><div><strong>Solicitado</strong><span id="proc-time">14:32:08</span></div></li>
+                      <li class="is-current"><span class="timeline-dot" aria-hidden="true"></span><div><strong>Em análise</strong><span>Conferindo chave e saldo</span></div></li>
+                      <li><span class="timeline-dot" aria-hidden="true"></span><div><strong>Enviado via Pix</strong><span>Aguardando</span></div></li>
+                    </ol>
+                    <div class="processing-total">
+                      <div><span class="micro">Valor solicitado</span><p><strong id="proc-tkn">2.000,00</strong><span class="unit">TKN</span></p></div>
+                      <div><span class="micro">Você recebe</span><p class="is-paid" id="proc-net">R$ 196,00</p></div>
+                    </div>
+                  </div>
+                  <aside class="ticket-stub" aria-label="Destino do saque">
+                    <span class="micro stub-label">Destino do Pix</span>
+                    <dl class="totals">
+                      <div><dt>Chave</dt><dd id="proc-key">CPF · ***.***.789-01</dd></div>
+                      <div><dt>Taxa</dt><dd id="proc-fee">− R$ 4,00</dd></div>
+                      <div><dt>Prazo</dt><dd>Após análise</dd></div>
+                    </dl>
+                    <div class="processing-pulse" aria-hidden="true">
+                      <span></span><span></span><span></span>
+                    </div>
+                    <p class="micro stub-fine">Não é preciso manter esta página aberta. O comprovante fica salvo nesta sessão.</p>
+                  </aside>
+                </div>
+                <span class="perf perf-top" aria-hidden="true"></span>
+                <span class="perf perf-bottom" aria-hidden="true"></span>
+              </article>
+            </div>
+
+            <div class="view" id="wd-view-done" hidden>
+              <article class="ticket receipt-ticket">
+                <header class="ticket-head">
+                  <div class="ticket-id">
+                    <span class="micro">Comprovante de saque</span>
+                    <span class="serial" id="wd-done-serial">VP-2026-048217</span>
+                  </div>
+                  <span class="stamp" data-state="paid">Pago</span>
+                </header>
+                <div class="ticket-main">
+                  <div class="ticket-body receipt-body">
+                    <div class="receipt-check receipt-check--out" aria-hidden="true">
+                      <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18"/><path d="M20 29V17m0 0 4.5 4.5M20 17l-4.5 4.5M12 30h16"/></svg>
+                    </div>
+                    <p class="receipt-title">Saque enviado</p>
+                    <p class="receipt-sub">O Pix foi enviado para a chave cadastrada.</p>
+                    <div class="receipt-amount">
+                      <span class="micro">Valor líquido</span>
+                      <p><strong id="wd-done-net">R$ 196,00</strong></p>
+                      <span id="wd-done-tkn">2.000,00 TKN convertidos</span>
+                    </div>
+                    <dl class="receipt-grid">
+                      <div><dt>Chave Pix</dt><dd id="wd-done-key">CPF · ***.***.789-01</dd></div>
+                      <div><dt>Taxa</dt><dd id="wd-done-fee">R$ 4,00</dd></div>
+                      <div><dt>Data e hora</dt><dd id="wd-done-date">13/11/2026 · 14:33</dd></div>
+                      <div><dt>Identificador</dt><dd class="mono-value" id="wd-done-id">S0048217</dd></div>
+                    </dl>
+                    <div class="receipt-actions">
+                      <button type="button" class="btn btn-primary" id="btn-wd-again">Novo saque</button>
+                      <button type="button" class="btn btn-ghost" id="btn-wd-history">Ver histórico</button>
+                    </div>
+                  </div>
+                  <aside class="ticket-stub receipt-stub" aria-label="Via do cliente">
+                    <span class="micro stub-label">Via do cliente</span>
+                    <p class="stub-receipt-id" id="wd-done-serial-2">VP-2026-048217</p>
+                    <div class="stub-barcode" aria-hidden="true">
+                      <svg viewBox="0 0 132 28" preserveAspectRatio="none">
+                        <rect x="0" width="2" height="28"/><rect x="4" width="1" height="28"/><rect x="7" width="1" height="28"/><rect x="10" width="2" height="28"/><rect x="14" width="1" height="28"/><rect x="17" width="3" height="28"/><rect x="22" width="1" height="28"/><rect x="25" width="1" height="28"/><rect x="28" width="2" height="28"/><rect x="32" width="1" height="28"/><rect x="35" width="1" height="28"/><rect x="38" width="2" height="28"/><rect x="42" width="3" height="28"/><rect x="47" width="1" height="28"/><rect x="50" width="2" height="28"/><rect x="54" width="1" height="28"/><rect x="57" width="1" height="28"/><rect x="60" width="3" height="28"/><rect x="65" width="1" height="28"/><rect x="68" width="2" height="28"/><rect x="72" width="1" height="28"/><rect x="75" width="1" height="28"/><rect x="78" width="2" height="28"/><rect x="82" width="1" height="28"/><rect x="85" width="3" height="28"/><rect x="90" width="1" height="28"/><rect x="93" width="1" height="28"/><rect x="96" width="2" height="28"/><rect x="100" width="1" height="28"/><rect x="103" width="3" height="28"/><rect x="108" width="1" height="28"/><rect x="111" width="1" height="28"/><rect x="114" width="2" height="28"/><rect x="118" width="1" height="28"/><rect x="121" width="2" height="28"/><rect x="125" width="1" height="28"/><rect x="128" width="2" height="28"/>
+                      </svg>
+                    </div>
+                    <dl class="totals">
+                      <div><dt>Operação</dt><dd>Saque Pix</dd></div>
+                      <div><dt>Status</dt><dd class="is-paid">Pago</dd></div>
+                      <div><dt>Saldo após</dt><dd id="wd-done-balance">6.450,00 TKN</dd></div>
+                    </dl>
+                    <p class="micro stub-fine">O comprovante também está no histórico da conta.</p>
+                  </aside>
+                </div>
+                <span class="perf perf-top" aria-hidden="true"></span>
+                <span class="perf perf-bottom" aria-hidden="true"></span>
+              </article>
+            </div>
+          </section>
+
+          <!-- HISTORY -->
+          <section class="panel" id="panel-history" role="tabpanel" aria-labelledby="tab-history" tabindex="0" hidden>
+            <div class="history-head">
+              <div class="filters" role="group" aria-label="Filtrar operações">
+                <button type="button" class="filter is-active" data-filter="all" aria-pressed="true">Todas</button>
+                <button type="button" class="filter" data-filter="deposit" aria-pressed="false">Depósitos</button>
+                <button type="button" class="filter" data-filter="withdraw" aria-pressed="false">Saques</button>
+              </div>
+              <span class="micro" id="history-count">4 operações</span>
+            </div>
+
+            <div class="ledger">
+              <table class="ledger-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Operação</th>
+                    <th scope="col">Data</th>
+                    <th scope="col" class="num">Valor</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="history-body"></tbody>
+              </table>
+              <div class="empty-state" id="history-empty" hidden>
+                <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="8" y="6" width="24" height="28" rx="2"/><path d="M14 14h12M14 20h12M14 26h7"/></svg>
+                <p>Nenhuma operação neste filtro.</p>
+                <button type="button" class="btn btn-ghost" data-nav="deposit">Fazer um depósito</button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="side" aria-label="Resumo da conta">
+          <section class="side-card account-card">
+            <header class="side-head">
+              <h2>Conta</h2>
+              <span class="status-chip"><span class="live-dot" aria-hidden="true"></span>Operacional</span>
+            </header>
+            <div class="account-balance">
+              <span class="micro">Saldo em TKN</span>
+              <p><strong id="side-balance-tkn">8.450,00</strong></p>
+              <span id="side-balance-brl">≈ R$ 845,00</span>
+            </div>
+            <dl class="account-grid">
+              <div><dt>Cotização</dt><dd>1 TKN = R$ 0,10</dd></div>
+              <div><dt>Taxa de saque</dt><dd>2%</dd></div>
+              <div><dt>Depósito mínimo</dt><dd>R$ 10,00</dd></div>
+              <div><dt>Saque mínimo</dt><dd>50 TKN</dd></div>
+            </dl>
+            <div class="account-actions">
+              <button type="button" class="side-action" data-nav="deposit">Depositar<span>Pix · sem taxa</span></button>
+              <button type="button" class="side-action" data-nav="withdraw">Sacar<span>Pix · 2%</span></button>
+            </div>
+          </section>
+
+          <section class="side-card">
+            <header class="side-head">
+              <h2>Últimas operações</h2>
+              <button type="button" class="text-link" data-nav="history">Ver histórico</button>
+            </header>
+            <ul class="mini-ledger" id="mini-ledger"></ul>
+          </section>
+
+          <section class="side-card help-card" id="atendimento">
+            <h2>Precisa de ajuda?</h2>
+            <p>Se uma operação não aparecer no histórico, envie o identificador do borderô para o atendimento.</p>
+            <button type="button" class="btn btn-ghost btn-block" id="btn-support">Falar com o atendimento</button>
+            <p class="micro">Atendimento simulado · sem transações reais.</p>
+          </section>
+        </aside>
+      </main>
+    </div>
+  </div>
+
+  <dialog class="dialog" id="withdraw-dialog" aria-labelledby="dialog-title">
+    <form method="dialog" class="dialog-card" id="withdraw-form-dialog">
+      <header class="dialog-head">
+        <span class="micro">Confirmação de saque</span>
+        <h2 id="dialog-title">Revise o borderô antes de enviar</h2>
+        <button type="button" class="icon-btn" id="dialog-close" aria-label="Fechar">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg>
+        </button>
+      </header>
+      <dl class="dialog-rows">
+        <div><dt>Valor solicitado</dt><dd id="dialog-tkn">2.000,00 TKN</dd></div>
+        <div><dt>Conversão</dt><dd id="dialog-gross">R$ 200,00</dd></div>
+        <div><dt>Taxa (2%)</dt><dd id="dialog-fee">− R$ 4,00</dd></div>
+        <div class="dialog-net"><dt>Você recebe</dt><dd id="dialog-net">R$ 196,00</dd></div>
+        <div><dt>Chave Pix</dt><dd id="dialog-key">CPF · ***.***.789-01</dd></div>
+        <div><dt>Saldo após o saque</dt><dd id="dialog-balance">6.450,00 TKN</dd></div>
+      </dl>
+      <p class="dialog-note">Depois de confirmar, o saque entra em análise e não pode ser cancelado por esta tela.</p>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-ghost" id="dialog-back">Voltar e revisar</button>
+        <button type="button" class="btn btn-primary" id="dialog-confirm">Confirmar saque</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="mobile-action" id="mobile-action" hidden>
+    <div class="mobile-action-copy">
+      <span class="micro" id="mobile-action-label">Você recebe</span>
+      <strong id="mobile-action-value">2.500,00 TKN</strong>
+      <span id="mobile-action-sub">R$ 250,00</span>
+    </div>
+    <button type="button" class="btn btn-primary" id="mobile-action-btn">Gerar QR Pix</button>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8"/></svg>
+    <span id="toast-text"></span>
+  </div>
+
+  <script src="vendor/qrcode.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
